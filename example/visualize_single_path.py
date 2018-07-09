@@ -1,8 +1,8 @@
 # 可视化一个给定的路径
 
-from visualize.v import plot_one_path
+from visualize.v import plot_one_path_liu
 import load_data as ldd
 
 warehouse, orders, charging, id_type_map = ldd.load_node_info("../data/input_node.csv")
 
-plot_one_path(warehouse, orders, charging, [196,448,131,1070,598,811,322,928], id_type_map)
+plot_one_path_liu(warehouse, orders, charging, [402,464,25,993,1053,587], id_type_map)

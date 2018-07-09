@@ -38,22 +38,21 @@ def if_path_legal(orders, path, distance_matrix, time_matrix, vehicle_info, id_t
                                 mVehicle["current_time"] = datetime.datetime(2018, 6, 18,int(t_order.fst_time.split(":")[0]),int(t_order.fst_time.split(":")[1]), 0)
                                 # print(mVehicle["current_time"])
                                 # 如果比服务时间下限小，就将服务时间下限作为服务时间，否则就是到达时间
-                            # 判断能否回到配送站
-                            if mVehicle["charge_mile"] +distance_matrix[path[node_idx]][0] > vehicle_info.driving_range:
-                                if mVehicle["charge_mile"] + t_order.charging_dist > vehicle_info.driving_range:
-                                    print("需要充电才能回配送站,但去不了充电")
-                                    return False
+                            # 判断到了该点后能不能去的了就近的充电站，去不了就违法
+                            if mVehicle["charge_mile"] + t_order.charging_dist > vehicle_info.driving_range:
+                                print("需要充电才能回配送站,但去不了充电")
+                                return False
                         else:
-                            # print("超时无法服务客户")
+                            print("超时无法服务客户",t_order.id)
                             return False
                     else:
-                        # print("车的电量不够")
+                        print("车的电量不够")
                         return False
                 else:
-                    # print("车辆容积不够")
+                    print("车辆容积不够")
                     return False
             else:
-                # print("车辆载重不够")
+                print("车辆载重不够")
                 return False
         else:
             # 判断到最近的充电站够不够
@@ -64,9 +63,11 @@ def if_path_legal(orders, path, distance_matrix, time_matrix, vehicle_info, id_t
                 mVehicle["current_time"] = mVehicle["current_time"] + datetime.timedelta(minutes=time_matrix[t_order.id][t_order.charging_binding] + 30)
                 # print("到充电站的时间", mVehicle["current_time"])
                 if mVehicle["charge_mile"] > vehicle_info.driving_range:
-                   return False #print("充电后回不了配送站")
+                   print("充电后回不了配送站")
+                   return False
             else:
-                return False# print("电量不够去充电")
+                print("电量不够去充电")
+                return False
     return True
 
 # 判断是否去充电
@@ -109,7 +110,7 @@ def if_go_to_charge1(orders, path, distance_matrix, time_matrix, vehicle_info, i
                                 mVehicle["current_time"] = datetime.datetime(2018, 6, 18,int(t_order.fst_time.split(":")[0]),int(t_order.fst_time.split(":")[1]), 0)
                                 # print(mVehicle["current_time"]) # 如果比服务时间下限小，就将服务时间下限作为服务时间，否则就是到达时间
 
-                            # 判断能否回到配送站
+                            # 到了这点以后去的了就近的充电站就可以，不需要提前判断能不能回配送站。
                             if mVehicle["charge_mile"] +distance_matrix[path[node_idx]][0] > vehicle_info.driving_range:
                                 if mVehicle["charge_mile"] + t_order.charging_dist > vehicle_info.driving_range:
                                     print("需要充电才能回配送站,但去不了充电")
