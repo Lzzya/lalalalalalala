@@ -4,6 +4,7 @@ import copy
 import algorithm.init as ai
 import random
 from algorithm.optimize import single_path_opt
+from algorithm.optimize import single_path_opt2
 
 #random.seed(time.time())
 random.seed(0)
@@ -35,19 +36,32 @@ for i in range(INIT_POPULATION_SIZE):
     init_pop_pd = opd.to_dataframe(init_population[i]) #转为dataframe
     opd.excelAddSheet(init_pop_pd,'excel_output2018070309.xlsx','sheet'+str(i+1))
 
-# 测试当前个体的路径中是否有可以调整后还可行的路径
+# 测试当前个体的路径中交换带来的变异效果
+# total_change_redu = []
+# for path in  init_population[0]:
+#     print(path.id)
+#     candidate_path =  single_path_opt(path.path, path.vehicle_id-1)
+#     if candidate_path != None:
+#         change_redu = path.total_cost - candidate_path.total_cost
+#         if change_redu > 0:
+#             print("可降低路径", path.id, "为", candidate_path.path,"下降", change_redu)
+#             total_change_redu.append(change_redu)
+#
+# print(total_change_redu)
+# print(len(total_change_redu),sum(total_change_redu))
+
+# 局部3个客户（包含充电站）重组变异
 total_change_redu = []
 for path in  init_population[0]:
     print(path.id)
-    candidate_path_tc =  single_path_opt(path.path, path.vehicle_id-1)
-    if len(candidate_path_tc) != 0:
-        change_redu = path.total_cost - min(candidate_path_tc)
+    candidate_path =  single_path_opt2(path.path, path.vehicle_id-1)
+    if candidate_path != None:
+        change_redu = path.total_cost - candidate_path.total_cost
         if change_redu > 0:
-            print("可降低路径",path.path, change_redu)
+            print("可降低路径", path.id, "为", candidate_path.path,"下降", change_redu)
             total_change_redu.append(change_redu)
 
 print(total_change_redu)
 print(len(total_change_redu),sum(total_change_redu))
 
-
-print("done")
+# print("done")
