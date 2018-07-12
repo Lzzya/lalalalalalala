@@ -100,21 +100,26 @@ def path_time_info(orders, path, distance_matrix, time_matrix, vehicle_info, id_
                 # print("车辆载重不够")
                 return False
         else:
-            # 判断到最近的充电站够不够
-            mVehicle["charge_mile"] = mVehicle["charge_mile"] +t_order.charging_dist
-            if mVehicle["charge_mile"] < vehicle_info.driving_range:
-                # 充电会影响充电行驶里程，还有行驶总路程，还有时间
-                mVehicle["charge_mile"] = 0
-                mVehicle["current_time"] = mVehicle["current_time"] + datetime.timedelta(minutes=time_matrix[t_order.id][t_order.charging_binding] + 30)
-                # print("到充电站的时间", mVehicle["current_time"])
-                # 增加判断能否回家
+            if node_idx != 0:
+                # 判断到最近的充电站够不够
+                mVehicle["charge_mile"] = mVehicle["charge_mile"] +t_order.charging_dist
                 if mVehicle["charge_mile"] < vehicle_info.driving_range:
-                    # print("不充电就直接回到配送站")
-                    trans_time = time_matrix[path[node_idx]][0]  # 两个节点之间的运输时间
-                    back_tm = mVehicle["current_time"] + datetime.timedelta(minutes=trans_time + 30)  # 30分钟是前一个客户服务时间
+                    # 充电会影响充电行驶里程，还有行驶总路程，还有时间
+                    mVehicle["charge_mile"] = 0
+                    mVehicle["current_time"] = mVehicle["current_time"] + datetime.timedelta(minutes=time_matrix[t_order.id][t_order.charging_binding] + 30)
+                    # print("到充电站的时间", mVehicle["current_time"])
+                    # 增加判断能否回家
+                    if mVehicle["charge_mile"] < vehicle_info.driving_range:
+                        # print("不充电就直接回到配送站")
+                        trans_time = time_matrix[path[node_idx]][0]  # 两个节点之间的运输时间
+                        back_tm = mVehicle["current_time"] + datetime.timedelta(minutes=trans_time + 30)  # 30分钟是前一个客户服务时间
+                    else:
+                        return False
                 else:
-                    return False
+                    return False# print("电量不够去充电")
             else:
-                return False# print("电量不够去充电")
+                trans_time = time_matrix[0][path[node_idx]]
+                mVehicle["current_time"] = datetime.datetime(2018, 6, 18, 8, 0, 0) + datetime.timedelta(
+                    minutes=trans_time)  # 30分钟是客户服务时间
     t_tm = [start_tm,back_tm,waiting_time]
     return t_tm
