@@ -16,6 +16,46 @@ for o in orders:
     o.set_charging(charging, distance_matrix)
     #o.set_distance_sorted_order(copy.deepcopy(orders), distance_matrix)
 
+# 将给定的点插入到一条路径中，判断其是否合规
+def insert_opt(point, path, v_type):
+    min_cost = 5000
+    vehicle_info = vehicles
+    min_cost_path = None
+    for p in path: # 插入每个点前面
+        new_path = deepcopy(path)
+        new_path.insert(path.index(p), point)
+        # print(new_path)
+        if if_path_legal(id_sorted_orders, new_path,
+                         datetime.datetime(2018, 6, 18, 8, 0, 0),
+                         distance_matrix, time_matrix,
+                         vehicles[v_type], id_type_map)[0] == True:
+            print("可行",new_path)
+            # 计算当前路径的总成本你是否降低
+            # count_change += 1
+            tp = TransportPath(new_path, v_type + 1)  # 实例化一个运输路径，接下来计算一些属性
+            tp = tp.calc_path_info(1, distance_matrix, time_matrix, vehicle_info, id_sorted_orders,
+                                   id_type_map)
+            if tp.total_cost < min_cost:
+                min_cost = tp.total_cost
+                min_cost_path = tp
+
+    new_path = deepcopy(path)
+    new_path.insert(len(path), point)
+    # print(new_path)
+    if if_path_legal(id_sorted_orders, new_path,
+                     datetime.datetime(2018, 6, 18, 8, 0, 0),
+                     distance_matrix, time_matrix,
+                     vehicles[v_type], id_type_map)[0] == True:
+        print("可行",new_path)
+        # 计算当前路径的总成本你是否降低
+        tp = TransportPath(new_path, v_type + 1)  # 实例化一个运输路径，接下来计算一些属性
+        tp = tp.calc_path_info(1, distance_matrix, time_matrix, vehicle_info, id_sorted_orders,
+                               id_type_map)
+        if tp.total_cost < min_cost:
+            min_cost_path = tp
+    return min_cost_path
+    # 插到原路径最后
+tt = insert_opt(65,[42, 670, 35, 402, 588, 112, 706, 1006],0)
 # 根据提供的两个索引，交换path中的相应客户
 def single_path_exchage(path , index1 , index2):
     new_path = deepcopy(path)
