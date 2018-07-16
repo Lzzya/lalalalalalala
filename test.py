@@ -1,6 +1,7 @@
 import load_data as ldd
 import algorithm.init as ai
 import random
+from algorithm.calculate import path_distance_time
 from visualize.v import plot_one_path,plot_pathes
 
 #random.seed(time.time())
@@ -20,12 +21,14 @@ for o in orders:
 
 print("generation initial population")
 
-individual = ai.random_individual(warehouse, id_sorted_orders, angle_sorted_orders, charging, vehicles, id_type_map, distance_matrix, time_matrix)
+# individual = ai.random_individual(warehouse, id_sorted_orders, angle_sorted_orders, charging, vehicles, id_type_map, distance_matrix, time_matrix)
 
-print("ploting")
+# print("ploting")
 
-pathes = []
-for e in individual:
-    pathes.append(e.path)
+# pathes = []
+# for e in individual:
+#     pathes.append(e.path)
 
-plot_pathes(warehouse, orders, charging, pathes, id_type_map)
+# plot_pathes(warehouse, orders, charging, pathes, id_type_map)
+a = orders[888-1]
+print(a.id ,a.charging_binding)
